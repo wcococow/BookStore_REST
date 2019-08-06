@@ -1,0 +1,11 @@
+{% block body %}
+<h1>Authors List</h1>
+{% for author in myAuthor %}
+	<li>author name: {{ author.name }},email:{{ author.email }}</li>
+{% endfor %}
+<h1>Publications List</h1>
+{% for pub in myPublication %}	
+	<li>No: {{ pub.publication_id }} catagory: {{ pub.catagory }} | title:{{ pub.title }} | year:{{ pub.year }}| type:{{ pub.type }}| hero:{{ pub.hero }}| genre:{{ pub.genre }}</li>
+{% endfor %}
+{% endblock %}
+

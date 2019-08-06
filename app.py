@@ -1,4 +1,4 @@
-from flask import Flask,request,jsonify
+from flask import Flask,request,jsonify,render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 import os
@@ -49,6 +49,7 @@ class Publication(db.Model):
 	hero = db.Column(db.String(20))
 	genre = db.Column(db.String(10))
 	
+	
 	def __init__(self,catagory,title,year,type,hero,genre):
 		self.catagory = catagory
 		self.title = title
@@ -65,6 +66,7 @@ class PublicationSchema(ma.Schema):
 publication_schema = PublicationSchema(strict=True)
 publications_schema = PublicationSchema(many=True,strict=True)
 	
+
 
 #create a author
 @app.route('/author',methods=['POST'])
@@ -165,6 +167,7 @@ def update_publication(id):
 	db.session.commit()
 	
 	return publication_schema.jsonify(publication)
+	
 
 #delete publication
 @app.route('/publication/<id>',methods=['DELETE'])
@@ -172,7 +175,32 @@ def delete_publication(id):
 	publication = Publication.query.get(id)
 	db.session.delete(publication)
 	db.session.commit()
-	return publication_schema.jsonify(publication)		
+	return publication_schema.jsonify(publication)	
+
+@app.route('/')
+def index():
+	myAuthor = Author.query.all()
+	myPublication = Publication.query.all()
+	return render_template('index.html',myAuthor=myAuthor,myPublication=myPublication)
+
+#search publications by year and author or or any arbitrary attribute
+@app.route('/search')
+def search():
+	all_publication = []
+	catagory = request.args['catagory']
+	title = request.args['title']
+	year = request.args['year']
+	type = request.args['type']
+	hero = request.args['hero']
+	genre = request.args['genre']
+	name = request.args['name']
+	
+	author = Author.query.filter_by(name=name).first()
+	for pub in author.publication:
+		all_publication.append(db.session.query(Publication).filter_by(publication_id=pub.publication_id).all())
+	return render_template('search.html',all_publication=all_publication,catagory=catagory,title=title,year=year,type=type,hero=hero,genre=genre,name=name)
+	
+		
 #Run server
 if  __name__ == '__main__':
 	app.run(debug=True)

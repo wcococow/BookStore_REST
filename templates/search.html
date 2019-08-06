@@ -1,0 +1,26 @@
+{% block body %}
+<h1>search by year and author or any arbitrary attribute<h1>
+<h4>Example: find all books written by Stephen King in 1990 or Example: find all novels by Stephen King</h4>
+
+<h1>All Publications List By {{name}}</h1>
+{% for all in all_publication %}
+        <tr>
+            {% for pub in all %}	
+				<td><li>No: {{ pub.publication_id }} catagory: {{ pub.catagory }} | title:{{ pub.title }} | year:{{ pub.year }}| type:{{ pub.type }}| hero:{{ pub.hero }}| genre:{{ pub.genre }}</li></td>	
+            {% endfor %}
+        </tr>
+{% endfor %}
+	
+<h1>Selected Publications List</h1>
+{% for all in all_publication %}
+        <tr>
+            {% for pub in all %}	
+				{% if (pub.year == year | int) or  (pub.catagory == catagory) or  (pub.title == title) or (pub.type == type) or  (pub.hero == hero) or  (pub.genre == genre) %}
+					<td><li>No: {{ pub.publication_id }} catagory: {{ pub.catagory }} | title:{{ pub.title }} | year:{{ pub.year }}| type:{{ pub.type }}| hero:{{ pub.hero }}| genre:{{ pub.genre }}</li></td>
+				{% endif %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+	
+{% endblock %}
+
